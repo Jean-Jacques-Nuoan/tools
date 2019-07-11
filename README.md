@@ -6,6 +6,7 @@
 > *终极目标*：从工具函数中扩展知识点
 
 1. **当前环境的一系列判断**
+----------
  * **1.1`1inBrowser`: 检测当前宿主环境是否是浏览器** 
 ```javascript
 // 通过判断 `window` 对象是否存在即可
@@ -18,6 +19,7 @@ export const inBrowser = typeof window !== 'undefined'
 export const hasProto = '__proto__' in {}
  ```
 2. **`user Agent`常量的一系列操作**
+----------
  * **2.1 获取当浏览器的`user Agent`**
  ```javascript
 // toLowerCase目的是 为了后续的各种环境检测
@@ -40,6 +42,7 @@ export const isEdge = UA && UA.indexOf('edge/') > 0
 export const isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge
 ```
 3. **字符串操作**
+----------
  * **3.1 `isReserved`：检测字符串是否以 $ 或者 _ 开头**
 ```javascript
 // charCodeAt() 方法可返回指定位置的字符的 Unicode 编码
@@ -157,6 +160,7 @@ export const hyphenate = cached((str: string): string => {
 解析： 与`camelize`相反。实现方式同样是使用正则，`/\B([A-Z])/g`用来全局匹配字符串中的大写字母, 然后替换掉。
 
 4. **类型判断**  
+----------
 * **4.1 `isPrimitive`: 判断变量是否为原型类型**  
 ```javascript
 export function isPrimitive (value: any): boolean %checks {
@@ -202,6 +206,7 @@ export function isObject (obj: mixed): boolean %checks {
 }
 ```
 5.**Vue中的闭包骚操作**  
+----------
 * **5.1 `makeMap()`：判断一个变量是否包含在传入字符串里**  
 ```javascript
 export function makeMap (
@@ -292,6 +297,7 @@ export function cached<F: Function> (fn: F): F {
 >在Vue中，需要转译很多相同的字符串，若每次都重新执行转译，会造成很多不必要的开销。 `cache`这个函数可以读取缓存，如果缓存中没有就存放到缓存中，最后再读。
 
 6. **多类型的全等判断**
+----------
 **`looseEqual`: 检查两个值是否相等**
 ```javascript
 export function looseEqual (a: any, b: any): boolean {
