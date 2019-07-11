@@ -1,28 +1,29 @@
 # tools
+![](https://user-gold-cdn.xitu.io/2019/2/25/16923dcd4edc871a?imageView2/1/w/1304/h/734/q/85/format/webp/interlace/1)
 ## 「*从源码中学习*」**Vue源码中的JS骚操作**    
 > **本文**不准备解析Vue源码的运行原理，**仅单纯**探寻**Vue**中工具函数中那些值得学习的骚操作
 
 > *终极目标*：从工具函数中扩展知识点
 
-1. 当前环境的一系列判断    
- * 1.`1inBrowser`: 检测当前宿主环境是否是浏览器    
+1. **当前环境的一系列判断**
+ * **1.1`1inBrowser`: 检测当前宿主环境是否是浏览器** 
 ```javascript
 // 通过判断 `window` 对象是否存在即可
 export const inBrowser = typeof window !== 'undefined'
 ```    
- * 1.2 `hasProto`:检查当前环境是否可以使用对象的 __proto__ 属性  
+ * **1.2 `hasProto`:检查当前环境是否可以使用对象的 `__proto__` 属性**  
  ```javascript
 // 一个对象的 __proto__ 属性指向了其构造函数的原型
 // 从一个空的对象字面量开始沿着原型链逐级检查。
 export const hasProto = '__proto__' in {}
  ```
-2. user Agent常量的一系列操作
- * 2.1 获取当浏览器的user Agent
+2. **`user Agent`常量的一系列操作**
+ * **2.1 获取当浏览器的`user Agent`**
  ```javascript
 // toLowerCase目的是 为了后续的各种环境检测
 export const UA = inBrowser && window.navigator.userAgent.toLowerCase()
  ```
- * 2.2 IE浏览器判断 
+ * **2.2 IE浏览器判断** 
 ```javascript
 export const isIE = UA && /msie|trident/.test(UA)
 ```
@@ -32,26 +33,29 @@ export const isIE = UA && /msie|trident/.test(UA)
 
 >多关键词高亮插件：[Multi-highlight](https://link.juejin.im?target=https%3A%2F%2Fchrome.google.com%2Fwebstore%2Fdetail%2Fmulti-highlight%2Fpfgfgjlejbbpfmcfjhdmikihihddeeji%2Frelated)
 
-2.3 IE9| Edge | Chrome 判断
+ * **2.3 `IE9`| `Edge` | `Chrome` 判断**
+ ```javascript
 export const isIE9 = UA && UA.indexOf('msie 9.0') > 0
 export const isEdge = UA && UA.indexOf('edge/') > 0
 export const isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge
-复制代码
-3. 字符串操作
-3.1 isReserved：检测字符串是否以 $ 或者 _ 开头
+```
+3. **字符串操作**
+ * **3.1 `isReserved`：检测字符串是否以 $ 或者 _ 开头**
+```javascript
 // charCodeAt() 方法可返回指定位置的字符的 Unicode 编码
 export function isReserved (str: string): boolean {
   const c = (str + '').charCodeAt(0)
   return c === 0x24 || c === 0x5F
 }
-复制代码
-解析： 获得该字符串第一个字符的unicode，然后与 0x24 和 0x5F 作比较。
+```
+解析： 获得该字符串第一个字符的`unicode`，然后与 `0x24` 和 `0x5F` 作比较。  
 
-若作为一个想进阶中高级的前端，charCodeAt方法的各种妙用还是需要知道的（面试算法题各种考）。
+若作为一个想进阶中高级的前端，`charCodeAt`方法的各种妙用还是需要知道的（面试算法题各种考）。
 
-3.1.2 Javascript中级算法之charCodeAt
-从传递进来的字母序列中找到缺失的字母并返回它。 如：fearNotLetter("abce") 应该返回 "d"。
+ * **3.1.2 `Javascript`中级算法之`charCodeAt`**
+>从传递进来的字母序列中找到缺失的字母并返回它。 如：fearNotLetter("abce") 应该返回 "d"。
 
+```javascript
 function fearNotLetter(str) {
   //将字符串转为ASCII码，并存入数组
   let arr=[];
@@ -69,16 +73,21 @@ function fearNotLetter(str) {
   return undefined;
 }
 fearNotLetter("abce") // "d"
-复制代码
-3.2 camelize: 连字符转驼峰
+```
+
+ * **3.2 `camelize`: 连字符转驼峰**
+```javascript
 const camelizeRE = /-(\w)/g
 export const camelize = cached((str: string): string => {
   return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
 })
-复制代码
-解析： 定义正则表达式：/-(\w)/g，用来全局匹配字符串中 中横线及连字符后的一个字符。若捕获到，则将字符以toUpperCase大写替换，否则以''替换。 如：camelize('aa-bb') // aaBb
+```
 
-3.3 toString: 将给定变量的值转换为 string 类型并返回
+解析： 定义正则表达式：`/-(\w)/g`，用来全局匹配字符串中 中横线及连字符后的一个字符。若捕获到，则将字符以`toUpperCase`大写替换，否则以`''`替换。 如：`camelize('aa-bb') // aaBb`
+
+ * **3.3 `toString`: 将给定变量的值转换为 string 类型并返回**  
+ 
+```javascript
 export function toString (val: any): string {
   return val == null
     ? ''
@@ -86,10 +95,11 @@ export function toString (val: any): string {
       ? JSON.stringify(val, null, 2)
       : String(val)
 }
-复制代码
-解析： 在Vue中充斥着很多这类增强型的封装，大大减少了我们代码的复杂性。但这里，我们要学习的是这种多重三元运算符的用法
+```
+解析： 在`Vue`中充斥着很多这类增强型的封装，大大减少了我们代码的复杂性。但这里，我们要学习的是这种`多重三元运算符`的用法
 
-3.3.1 多重三元运算符
+* **3.3.1 多重三元运算符**  
+```javascript
 export function toString (val: any): string {
   return val == null
     ? ''
@@ -97,9 +107,9 @@ export function toString (val: any): string {
       ? JSON.stringify(val, null, 2)
       : String(val)
 }
-复制代码
-解析：
-
+```
+`解析：`
+```
 export function toString (val: any): string {
   return 当变量值为 null 时
     ? 返回空字符串
@@ -107,10 +117,12 @@ export function toString (val: any): string {
       ? 返回 JSON.stringify(val, null, 2)
       : 否则 String(val)
 }
-复制代码
-类似的操作在vue源码里很多。比如mergeHook
+```
 
-3.3.2 mergeHook: 合并生命周期选项
+类似的操作在vue源码里很多。比如`mergeHook`
+
+* **3.3.2 `mergeHook`: 合并生命周期选项**  
+```javascript
 function mergeHook (
   parentVal: ?Array<Function>,
   childVal: ?Function | ?Array<Function>
@@ -123,27 +135,30 @@ function mergeHook (
         : [childVal]
     : parentVal
 }
-复制代码
-这里我们不关心mergeHook在源码中是做什么的（其实是判断父子组件有无对应名字的生命周期钩子函数，然后将其通过 concat合并
+```
+这里我们不关心`mergeHook`在源码中是做什么的（其实是判断父子组件有无对应名字的生命周期钩子函数，然后将其通过 `concat`合并
 
-3.4 capitalize:首字符大写
+* **3.4 capitalize:首字符大写**  
+```javascript
 // 忽略cached
 export const capitalize = cached((str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1)
 })
-复制代码
-解析： str.charAt(0)获取str的第一项，利用toUpperCase()转换为大写字母，str.slice(1) 截取除第一项的str部分。
+```
+解析： `str.charAt(0)`获取`str`的第一项，利用`toUpperCase()`转换为大写字母，`str.slice(1)` 截取除第一项的`str`部分。
 
-3.5 hyphenate:驼峰转连字符
+* **3.5 `hyphenate`:驼峰转连字符**  
+```javascript
 const hyphenateRE = /\B([A-Z])/g
 export const hyphenate = cached((str: string): string => {
   return str.replace(hyphenateRE, '-$1').toLowerCase()
 })
-复制代码
-解析： 与camelize相反。实现方式同样是使用正则，/\B([A-Z])/g用来全局匹配字符串中的大写字母, 然后替换掉。
+```
+解析： 与`camelize`相反。实现方式同样是使用正则，`/\B([A-Z])/g`用来全局匹配字符串中的大写字母, 然后替换掉。
 
-4. 类型判断
-4.1 isPrimitive: 判断变量是否为原型类型
+4. **类型判断**  
+* **4.1 `isPrimitive`: 判断变量是否为原型类型**  
+```javascript
 export function isPrimitive (value: any): boolean %checks {
   return (
     typeof value === 'string' ||
@@ -153,37 +168,42 @@ export function isPrimitive (value: any): boolean %checks {
     typeof value === 'boolean'
   )
 }
-复制代码
+```
 解析： 这个很简单，但我们经常忽略掉symbol这个类型（虽然完全没用过）。
 
-4.2 isRegExp: 判断变量是否为正则对象。
+* **4.2 `isRegExp`: 判断变量是否为正则对象。**
+```javascript
 // 使用 Object.prototype.toString 与 '[object RegExp]' 做全等对比。
 
 export function isRegExp (v: any): boolean {
   return _toString.call(v) === '[object RegExp]'
 }
-复制代码
-这也是最准确的类型判断方法，在Vue中其它类型也是一样的判断
+```
+这也是最准确的类型判断方法，在`Vue`中其它类型也是一样的判断
 
-4.3 isValidArrayIndex: 判断变量是否含有效的数组索引
+* **4.3 isValidArrayIndex: 判断变量是否含有效的数组索引**
+```javascript
 export function isValidArrayIndex (val: any): boolean {
   const n = parseFloat(String(val))
   // n >= 0 && Math.floor(n) === n 保证了索引是一个大于等于 0 的整数
   return n >= 0 && Math.floor(n) === n && isFinite(val)
 }
-复制代码
-isFinite方法检测它参数的数值。如果参数是NaN，正无穷大或者负无穷大，会返回false，其他返回true。
+```
+`isFinite`方法检测它参数的数值。如果参数是`NaN`，正无穷大或者负无穷大，会返回`false`，其他返回`true`。
 
-扩展：语法：isFinite()
+>扩展：[语法：isFinite()](https://link.juejin.im?target=https%3A%2F%2Fdeveloper.mozilla.org%2Fzh-CN%2Fdocs%2FWeb%2FJavaScript%2FReference%2FGlobal_Objects%2FisFinite)
+![](https://user-gold-cdn.xitu.io/2019/2/25/16923e09ace9f772?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 
-4.4 isObject: 区分对象和原始值
+* **4.4 `isObject`: 区分对象和原始值**  
+```javascript
 export function isObject (obj: mixed): boolean %checks {
   return obj !== null && typeof obj === 'object'
 }
-复制代码
-5.Vue中的闭包骚操作
-5.1 makeMap()：判断一个变量是否包含在传入字符串里
+```
+5.**Vue中的闭包骚操作**  
+* **5.1 `makeMap()`：判断一个变量是否包含在传入字符串里**  
+```javascript
 export function makeMap (
   str: string,
   expectsLowerCase?: boolean
@@ -197,24 +217,24 @@ export function makeMap (
     ? val => map[val.toLowerCase()]
     : val => map[val]
 }
-复制代码
-定义一个对象map
-将 str 分隔成数组并保存到 list 变量中
-遍历list，并以list中的元素作为 map 的 key，将其设置为 true
-返回一个函数，并且如果expectsLowerCase为true的话，小写map[key]:
+```
+1.定义一个对象`map`  
+2.将 `str` 分隔成数组并保存到 `list` 变量中  
+3.遍历`list`，并以`list`中的元素作为 `map` 的 `key`，将其设置为 `true`  
+4.返回一个函数，并且如果`expectsLowerCase`为`true`的话，小写`map[key]`:  
 我们用一个例子来说明下：
-
+```javascript
 let isMyName = makeMap('前端劝退师,帅比',true); 
 //设定一个检测是否为我的名字的方法，第二个参数不区分大小写
 isMyName('前端劝退师')  // true
 isMyName('帅比')  // true
 isMyName('丑逼')  // false
-复制代码
-Vue中类似的判断非常多，也很实用。
+```
+`Vue`中类似的判断非常多，也很实用。
 
-5.1.1 isHTMLTag | isSVG | isReservedAttr
+* **5.1.1 `isHTMLTag` | `isSVG` | `isReservedAttr`**  
 这三个函数是通过 makeMap 生成的，用来检测一个属性（标签）是否为保留属性（标签）
-
+```javascript
 export const isHTMLTag = makeMap(
   'html,body,base,head,link,meta,style,title,' +
   'address,article,aside,footer,header,h1,h2,h3,h4,h5,h6,hgroup,nav,section,' +
@@ -236,8 +256,9 @@ export const isSVG = makeMap(
 )
 // web平台的保留属性有 style 和 class
 export const isReservedAttr = makeMap('style,class')
-复制代码
-5.2 once:只调用一次的函数
+```
+* **5.2 `once`:只调用一次的函数**
+```javascript
 export function once (fn: Function): Function {
   let called = false
   return function () {
@@ -247,10 +268,12 @@ export function once (fn: Function): Function {
     }
   }
 }
-复制代码
-解析： 以called作为回调标识符。调用此函数时，called标示符改变，下次调用就无效了。也是典型的闭包调用。
+```
+解析： 以`called`作为回调标识符。调用此函数时，`called`标示符改变，下次调用就无效了。也是典型的闭包调用。
 
-5.3 cache:创建一个缓存函数
+* **5.3 `cache`:创建一个缓存函数**
+
+```javascript
 /**
  * Create a cached version of a pure function.
  */
@@ -261,15 +284,16 @@ export function cached<F: Function> (fn: F): F {
     return hit || (cache[str] = fn(str))
   }: any)
 }
-复制代码
+```
 解析： 这里的注释已把作用解释了。
 
-const cache = Object.create(null)创建纯函数是为了防止变化（纯函数的特性：输入不变则输出不变）。
+`const cache = Object.create(null)`创建纯函数是为了防止变化`（纯函数的特性：输入不变则输出不变）`。
 
-在Vue中，需要转译很多相同的字符串，若每次都重新执行转译，会造成很多不必要的开销。 cache这个函数可以读取缓存，如果缓存中没有就存放到缓存中，最后再读。
+>在Vue中，需要转译很多相同的字符串，若每次都重新执行转译，会造成很多不必要的开销。 `cache`这个函数可以读取缓存，如果缓存中没有就存放到缓存中，最后再读。
 
-6. 多类型的全等判断
-looseEqual: 检查两个值是否相等
+6. **多类型的全等判断**
+**`looseEqual`: 检查两个值是否相等**
+```javascript
 export function looseEqual (a: any, b: any): boolean {
   // 当 a === b 时，返回true
   if (a === b) return true
@@ -314,10 +338,10 @@ export function looseEqual (a: any, b: any): boolean {
     return false
   }
 }
-复制代码
+```
 这个函数比较长，建议配合注释食用。 总之，就是
 
-各种类型判断+递归
-
+**各种类型判断+递归**  
+![](https://user-gold-cdn.xitu.io/2019/2/25/16923f9e58db09a0?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 此篇就先讲讲Vue中的一些工具函数类的吧，Vue源码很多值得挖掘的玩法。走过路过，点个赞憋老哥。
