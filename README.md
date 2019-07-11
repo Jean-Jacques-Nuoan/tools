@@ -113,7 +113,7 @@ export function toString (val: any): string {
       : String(val)
 }
 ```
-`解析：`
+解析：
 ```
 export function toString (val: any): string {
   return 当变量值为 null 时
